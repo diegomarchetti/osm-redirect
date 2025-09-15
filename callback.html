@@ -1,8 +1,50 @@
 <!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>OSM Auth Redirect</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    padding: 20px;
+  }
+
+  a.btn {
+    display: inline-block;
+    padding: 12px 16px;
+    background: #1976d2;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+  }
+
+  p {
+    color: #888
+  }
+</style>
+<h3>Redirecting to app…</h3>
+<p>Se non succede nulla, tocca il pulsante qui sotto.</p>
 <script>
   const p = new URLSearchParams(location.search);
-  const code = p.get('code') || ''; // If OSM sends error, you can inspect 'error' and 'error_description' too location.replace('allertaautovelox://osm/callback?code=' + encodeURIComponent(code)); 
+  const code = p.get('code') || '';
+  const custom = 'allertaautovelox://osm/callback?code=' + encodeURIComponent(code);
+  const intent = 'intent://osm/callback?code=' + encodeURIComponent(code) + '#Intent;scheme=allertaautovelox;package=com.diego.allertaautovelox;end';
+  // Try custom scheme first, then Chrome intent fallback after a short delay
+  function tryOpen() {
+    // Some browsers ignore programmatic custom-scheme navigations unless user-initiated.
+    // We still attempt once, then show a clickable fallback.
+    window.location.href = custom;
+    setTimeout(function() {
+      // Chrome supports intent:// fallback
+      window.location.href = intent;
+    }, 200);
+  }
+  // Kick off attempt shortly after load
+  setTimeout(tryOpen, 150);
 </script>
-<p>Redirecting to app…</p>
+<!-- Explicit tap fallback -->
+<p>
+  <a id="openApp" class="btn" href="#">Apri l’app</a>
+</p>
+<script>
+  document.getElementById('openApp').addEventListener('click', function(e) {
+        e.preventDefault(); // Try custom scheme; if blocked, intent fallback window.location.href = custom; setTimeout(function () { window.location.href = intent; }, 100); }); 
+</script>
