@@ -1,0 +1,8 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OSM Auth Redirect</title>
+<script>
+  const p = new URLSearchParams(location.search);
+  const code = p.get('code') || ''; // If OSM sends error, you can inspect 'error' and 'error_description' too location.replace('allertaautovelox://osm/callback?code=' + encodeURIComponent(code)); 
+</script>
+<p>Redirecting to app…</p>
